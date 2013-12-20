@@ -1,8 +1,5 @@
 /*!
- * Timepicker Component for Twitter Bootstrap
- *
- * Copyright 2013 Joris de Wit
- *
+ * Timepicker Component for Twitter Bootstrap * * Copyright 2013 Joris de Wit *
  * Contributors https://github.com/jdewit/bootstrap-timepicker/graphs/contributors
  *
  * For the full copyright and license information, please view the LICENSE
@@ -242,10 +239,10 @@
         templateContent;
 
       if (this.showInputs) {
-        hourTemplate = '<input type="text" name="hour" class="bootstrap-timepicker-hour form-control" maxlength="2"/>';
-        minuteTemplate = '<input type="text" name="minute" class="bootstrap-timepicker-minute form-control" maxlength="2"/>';
-        secondTemplate = '<input type="text" name="second" class="bootstrap-timepicker-second form-control" maxlength="2"/>';
-        meridianTemplate = '<input type="text" name="meridian" class="bootstrap-timepicker-meridian form-control" maxlength="2"/>';
+        hourTemplate = '<input type="text" name="hour" class="form-control bootstrap-timepicker-hour" maxlength="2"/>';
+        minuteTemplate = '<input type="text" name="minute" class="form-control bootstrap-timepicker-minute" maxlength="2"/>';
+        secondTemplate = '<input type="text" name="second" class="form-control bootstrap-timepicker-second" maxlength="2"/>';
+        meridianTemplate = '<input type="text" name="meridian" class="form-control bootstrap-timepicker-meridian" maxlength="2"/>';
       } else {
         hourTemplate = '<span class="bootstrap-timepicker-hour"></span>';
         minuteTemplate = '<span class="bootstrap-timepicker-minute"></span>';
@@ -348,7 +345,7 @@
         this.$widget.removeClass('open');
       }
 
-      $(document).off('mousedown.timepicker, touchend.timepicker');
+      $(document).off('mousedown.timepicker, touchend.timepicker, keydown.timepicker');
 
       this.isOpen = false;
       // show/hide approach taken by datepicker
@@ -858,13 +855,12 @@
       // show/hide approach taken by datepicker
       this.$widget.appendTo(this.appendWidgetTo);
       var self = this;
-      $(document).on('mousedown.timepicker, touchend.timepicker', function (e) {
+      $(document).on('mousedown.timepicker, touchend.timepicker, keydown.timepicker', function (e) {
         // This condition was inspired by bootstrap-datepicker.
         // The element the timepicker is invoked on is the input but it has a sibling for addon/button.
-        if (!(self.$element.parent().find(e.target).length ||
-            self.$widget.is(e.target) ||
-            self.$widget.find(e.target).length)) {
-          self.hideWidget();
+        if (!(self.$element.parent().find(e.target).length || self.$widget.is(e.target) || self.$widget.find(e.target).length) ||
+             (self.$element.is(e.target) && e.keyCode == 9)) {
+           self.hideWidget();
         }
       });
 
@@ -999,7 +995,7 @@
 
     widgetKeydown: function(e) {
       var $input = $(e.target),
-          name = $input.attr('class').replace('bootstrap-timepicker-', '');
+          name = $input.attr('class').replace(/.*bootstrap-timepicker-/, '');
 
       switch (e.keyCode) {
       case 9: //tab
